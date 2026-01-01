@@ -1,0 +1,11 @@
+{
+    "name": "credit-debit-manager",
+    "version": "1.0.0",
+    "description": "A glassmorphic personal finance manager.",
+    "main": "app.js",
+    "scripts": {
+        "start": "npx serve ."
+    },
+    "author": "",
+    "license": "ISC"
+}

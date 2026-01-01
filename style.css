@@ -1,0 +1,309 @@
+:root {
+    /* --- Shared --- */
+    --font-family: 'Outfit', sans-serif;
+    --success: #10b981;
+    --danger: #ef4444;
+
+    /* --- Light Theme (Crystal Clear & Translucent) --- */
+    --bg-main: #f0f4f8;
+    /* Vibrant blobs for glass canvas */
+    --bg-gradient-1: rgba(99, 102, 241, 0.6);
+    /* Strong Indigo */
+    --bg-gradient-2: rgba(236, 72, 153, 0.6);
+    /* Strong Pink */
+    --bg-gradient-3: rgba(34, 211, 238, 0.6);
+    /* Strong Cyan */
+
+    /* TRANSLUCENT GLASS */
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    /* Very low opacity for transparency */
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-highlight: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+
+    --primary-color: #4f46e5;
+    --primary-text-on: #ffffff;
+
+    --input-bg: rgba(255, 255, 255, 0.3);
+    --input-border: rgba(148, 163, 184, 0.3);
+}
+
+[data-theme="dark"] {
+    /* --- Dark Theme (Premium & Deep) --- */
+    --bg-main: #0f172a;
+    /* Slate 900 */
+    --bg-gradient-1: rgba(56, 189, 248, 0.25);
+    /* Stronger Sky */
+    --bg-gradient-2: rgba(129, 140, 248, 0.25);
+    /* Stronger Indigo */
+    --bg-gradient-3: rgba(192, 132, 252, 0.25);
+    /* Stronger Purple */
+
+    --glass-bg: rgba(30, 41, 59, 0.4);
+    /* More transparent */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+
+    --primary-color: #818cf8;
+    /* Indigo 400 */
+    --primary-text-on: #0f172a;
+
+    --input-bg: rgba(15, 23, 42, 0.5);
+    --input-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-main);
+    background-image:
+        radial-gradient(at 0% 0%, var(--bg-gradient-1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, var(--bg-gradient-2) 0, transparent 50%),
+        radial-gradient(at 100% 100%, var(--bg-gradient-3) 0, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+    transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Utilities */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-highlight);
+    border-left: 1px solid var(--glass-highlight);
+    /* Add left highlight for 3D light source */
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+}
+
+.active-screen {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 10;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    outline: none;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--primary-text-on);
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.2s;
+}
+
+.btn-danger:active {
+    background: var(--danger);
+    color: white;
+}
+
+input,
+select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    padding: 14px;
+    border-radius: 12px;
+    color: var(--text-main);
+    width: 100%;
+    font-family: inherit;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Chips */
+.cat-chip input:checked+span {
+    /* This is handled visually by js usually, 
+      but let's make sure the chip container reacts */
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal-active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Icons */
+i {
+    vertical-align: middle;
+}
+
+/* --- Custom Keypad & PIN --- */
+.pin-display {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.pin-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pin-dot.filled {
+    background: var(--primary-color);
+    transform: scale(1.2);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+.keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.keypad-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.1s;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: var(--glass-shadow);
+}
+
+.keypad-btn:active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(0.9);
+}
+
+.keypad-btn:hover {
+    border-color: var(--primary-color);
+}
+
+/* --- Footer --- */
+.app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 100;
+    pointer-events: none;
+    /* Let clicks pass through if needed, though usually footer is small */
+}
+
+.animated-name {
+    font-weight: 700;
+    background: linear-gradient(270deg, #ff00cc, #3333ff, #00ccff, #ff00cc);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: nameFlow 4s ease infinite;
+}
+
+@keyframes nameFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
