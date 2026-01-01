@@ -120,6 +120,8 @@ button {
     font-family: inherit;
     border: none;
     outline: none;
+    color: inherit;
+    /* Fixes contrast issue in dark mode */
 }
 
 .btn-primary {
@@ -201,6 +203,34 @@ select:focus {
     opacity: 1;
 }
 
+/* Modals need higher opacity background for contrast against overlay */
+.modal-overlay .glass-panel,
+#settle-modal>.glass-panel {
+    background: #ffffff;
+    color: var(--text-main);
+}
+
+/* Ensure buttons inside white modals are visible */
+.modal-overlay .glass-panel button.glass-panel,
+#settle-modal>.glass-panel button.glass-panel {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .modal-overlay .glass-panel,
+[data-theme="dark"] #settle-modal>.glass-panel {
+    background: rgba(30, 41, 59, 0.95);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .modal-overlay .glass-panel button.glass-panel,
+[data-theme="dark"] #settle-modal>.glass-panel button.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--glass-border);
+    color: var(--text-main);
+}
+
 /* Icons */
 i {
     vertical-align: middle;
@@ -276,6 +306,25 @@ i {
     padding: 10px;
     font-size: 0.75rem;
     color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 100;
+    pointer-events: none;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.app-footer.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.animated-name {
+    font-weight: 700;
+    background: linear-gradient(270deg, #ff00cc, #3333ff, #00ccff, #ff00cc);
+    background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
