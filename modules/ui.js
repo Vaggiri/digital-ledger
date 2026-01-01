@@ -622,6 +622,11 @@ export const UI = {
                             <input type="text" id="l-desc" placeholder="For lunch, cab, etc...">
                         </div>
 
+                        <div style="margin-bottom: 20px;">
+                             <label style="display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.9rem;">Reminder Date (Optional)</label>
+                             <input type="date" id="l-reminder" style="color: var(--text-main);">
+                        </div>
+
                          <div style="margin-bottom: 25px;">
                             <label style="display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.9rem;">Via</label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -669,13 +674,15 @@ export const UI = {
                 const person = document.getElementById('l-person').value;
                 const desc = document.getElementById('l-desc').value;
                 const mode = document.querySelector('input[name="l-mode"]:checked').value;
+                const reminderDate = document.getElementById('l-reminder').value;
 
                 const t = {
                     type: type, // 'lend' or 'borrow'
                     amount: amount,
                     person: person,
                     desc: desc,
-                    mode: mode
+                    mode: mode,
+                    reminderDate: reminderDate
                 };
 
                 document.dispatchEvent(new CustomEvent('app:add-transaction', { detail: t }));

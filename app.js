@@ -28,6 +28,47 @@ function initApp() {
     } else {
         UI.showRegister();
     }
+
+    // Dynamic Footer Logic
+    const footer = document.querySelector('.app-footer');
+    let isInputFocused = false;
+
+    const toggleFooter = () => {
+        if (isInputFocused) {
+            footer.classList.remove('visible');
+            return;
+        }
+
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const threshold = document.body.offsetHeight - 50; // Buffer
+
+        if (scrollPosition >= threshold) {
+            footer.classList.add('visible');
+        } else {
+            footer.classList.remove('visible');
+        }
+    };
+
+    window.addEventListener('scroll', toggleFooter);
+
+    // Initial check (in case content is short)
+    setTimeout(toggleFooter, 500);
+
+    // Mobile Keyboard Detection (Approximation via focus)
+    document.body.addEventListener('focusin', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            isInputFocused = true;
+            toggleFooter();
+        }
+    });
+
+    document.body.addEventListener('focusout', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            isInputFocused = false;
+            // Slight delay to allow keyboard to close
+            setTimeout(toggleFooter, 300);
+        }
+    });
 }
 
 function checkReminders() {
@@ -36,15 +77,37 @@ function checkReminders() {
 
     data.transactions.forEach(t => {
         if (t.type === 'lend') {
-            const date = new Date(t.date);
             const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            let showReminder = false;
+            let msg = '';
 
-            // Check if it's been exactly a week (or multiple of weeks)
-            // Just for demo purposes, let's say "if it's > 7 days"
-            if (diffDays > 0 && diffDays % 7 === 0) {
-                showToast(`Reminder: Collect ₹${t.amount} from ${t.person} (${diffDays} days ago)`);
+            // 1. Custom Reminder Date
+            if (t.reminderDate) {
+                const rDate = new Date(t.reminderDate);
+                // Check if today matches the reminder date (ignoring time)
+                if (now.toDateString() === rDate.toDateString()) {
+                    showReminder = true;
+                    msg = `Reminder: Collect ₹${t.amount} from ${t.person} (Today)`;
+                } else if (now > rDate && !t.status) {
+                    // Also remind if past due (and not settled)
+                    showReminder = true;
+                    const diff = Math.floor((now - rDate) / (1000 * 60 * 60 * 24));
+                    msg = `Overdue: Collect ₹${t.amount} from ${t.person} (${diff} days ago)`;
+                }
+            }
+            // 2. Default Weekly fallback (only if no custom date set)
+            else {
+                const date = new Date(t.date);
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 0 && diffDays % 7 === 0) {
+                    showReminder = true;
+                    msg = `Reminder: Collect ₹${t.amount} from ${t.person} (${diffDays} days ago)`;
+                }
+            }
+
+            if (showReminder) {
+                showToast(msg);
             }
         }
     });
